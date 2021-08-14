@@ -1,23 +1,29 @@
-// import { useEffect, useState } fr  om "react";
+import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import TypeArea from "./components/TypeArea";
 import UseQuote from "./hooks/UseQuote";
 
 const App = () => {
   const [getQuote, quote] = UseQuote();
-  // const [type, setType] = useState("");
-  // useEffect(() => {
-  //   setType(quote?.quoteText ?? "");
-  // }, [quote]);
+  const [currentWord, setCurrentWord] = useState("");
+  // const [completedWords, setCompletedWords] = useState("");
+
+  useEffect(() => {
+    console.log(currentWord);
+  }, [currentWord]);
 
   return (
     <div>
       <div className="quoteGoesHere">
-        {typeof quote === "string" ? quote : quote.quoteText}
+        {typeof quote === "string"
+          ? quote
+          : quote.quoteText.split(" ").join(" ")}
       </div>
-      <TypeArea quote={quote?.quoteText ?? ""} />
-      {/* <input type="text"></input> */}
-      <button onClick={getQuote}>get Quote</button>
+      <TypeArea
+        quote={quote?.quoteText ?? ""}
+        setCurrentWord={setCurrentWord}
+      />
+      <button onClick={getQuote}>Get Quote</button>
     </div>
   );
 };

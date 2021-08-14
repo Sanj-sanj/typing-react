@@ -1,69 +1,40 @@
 import { useEffect, useState } from "react";
 
-// function validate(currQuote, currentWord, setCurr) {
-//   // console.log("recall");
-//   let toUse = currQuote.split(" ");
-//   function assign(currQuote, currentWord, setCurr, word) {
-//     //   console.log(word);
-//     //   console.log(curr);
-//     if (word === currentWord) {
-//       console.log("its a match");
-//       const next = toUse.shift();
-//       setCurr(next);
-//       // quote.length ? setCurr(toUse.shift()) : setCurr("");
-//     }
-//   }
-//   return assign;
-// }
-
-// function validate() {
-//   let words;
-
-//   function assign(userInput, quote) {
-//     words = words ?? quote.split(" ");
-
-//     if (userInput === curr) {
-//       console.log("matched input");
-//       setCurr(words.shift());
-//     }
-//   }
-//   return assign;
-// }
-// let validator = validate();
-const TypeArea = ({ quote }) => {
-  const [currentWord, setCurrentWord] = useState("");
+const TypeArea = ({ quote, setCurrentWord }) => {
   const [index, setIndex] = useState(0);
-  //   const validator = validate(quote, curr, setCurr);
 
   useEffect(() => {
+    //if quote changes, that means new game begun, reset index and set currWord to [0] position.
     if (quote) {
-      console.log("newWord");
       setIndex(0);
       setCurrentWord(quote.split(" ")[index] + " ");
     }
   }, [quote]);
 
-  function nextWord() {
-    //   console.log(currentWord);
-    const wordsAray = quote.split(" ");
-    const last = wordsAray.length - 1;
-    //check to see if the next word is the last word, if it isn't padd the end with whitespace.
-    const next =
-      index + 1 === last ? wordsAray[index + 1] : wordsAray[index + 1] + " ";
-    if (index === last) {
-      prompt("you're done bud");
+  function nextWord(userInput) {
+    const wordsArray = quote.split(" ");
+    const last = wordsArray.length - 1;
+    const currentWord =
+      index === last ? wordsArray[index] : wordsArray[index] + " ";
+    const nextWord =
+      index + 1 >= last ? wordsArray[index + 1] : wordsArray[index + 1] + " ";
+
+    if (userInput === currentWord) {
+      //check to see if the next word is the last word, if it isn't padd the end with whitespace.
+      if (index === last) {
+        alert("you're done bud");
+      }
+      setCurrentWord(nextWord);
+      setIndex(index + 1);
+      return true;
     }
-    setCurrentWord(next);
-    setIndex(index + 1);
   }
 
   return (
     <input
-      onKeyUp={(e) => {
-        e.target.value === currentWord
-          ? (nextWord(), (e.target.value = ""))
-          : null;
-      }}
+      onKeyUp={(e) =>
+        nextWord(e.target.value) === true ? (e.target.value = "") : null
+      }
     ></input>
   );
 };
