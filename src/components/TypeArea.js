@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 
-const TypeArea = ({ quote, setCurrentWord }) => {
+const TypeArea = ({ quote, setCurrentWord, append }) => {
   const [index, setIndex] = useState(0);
-
   useEffect(() => {
     //if quote changes, that means new game begun, reset index and set currWord to [0] position.
     if (quote) {
       setIndex(0);
-      setCurrentWord(quote.split(" ")[index] + " ");
+      setCurrentWord(quote.split(" ")[0] + " ");
     }
   }, [quote]);
 
@@ -21,9 +20,9 @@ const TypeArea = ({ quote, setCurrentWord }) => {
 
     if (userInput === currentWord) {
       //check to see if the next word is the last word, if it isn't padd the end with whitespace.
-      if (index === last) {
-        alert("you're done bud");
-      }
+      // if (index === last) {
+      //   alert("you're done bud");
+      // }
       setCurrentWord(nextWord);
       setIndex(index + 1);
       return true;
@@ -33,7 +32,9 @@ const TypeArea = ({ quote, setCurrentWord }) => {
   return (
     <input
       onKeyUp={(e) =>
-        nextWord(e.target.value) === true ? (e.target.value = "") : null
+        nextWord(e.target.value) === true
+          ? (append(e.target.value), (e.target.value = ""))
+          : null
       }
     ></input>
   );
