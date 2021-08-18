@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const TypeArea = ({ quote, setCurrentWord, append }) => {
+const TypeArea = ({ quote, setCurrentWord, append, saveUserInput }) => {
   const [index, setIndex] = useState(0);
   useEffect(() => {
     //if quote changes, that means new game begun, reset index and set currWord to [0] position.
@@ -31,11 +31,12 @@ const TypeArea = ({ quote, setCurrentWord, append }) => {
 
   return (
     <input
-      onKeyUp={(e) =>
+      onKeyUp={(e) => {
+        saveUserInput(e.target.value);
         nextWord(e.target.value) === true
-          ? (append(e.target.value), (e.target.value = ""))
-          : null
-      }
+          ? (append(e.target.value), (e.target.value = ""), saveUserInput(""))
+          : null;
+      }}
     ></input>
   );
 };
