@@ -23,7 +23,7 @@ const TypeArea = ({ quote, setCurrentWord, append, saveUserInput }) => {
       // if (index === last) {
       //   alert("you're done bud");
       // }
-      setCurrentWord(nextWord);
+      setCurrentWord(nextWord ?? "");
       setIndex(index + 1);
       return true;
     }

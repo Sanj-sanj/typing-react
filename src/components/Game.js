@@ -40,11 +40,11 @@ const Game = () => {
     );
   };
 
-  function filteredUserInput(word) {
+  function filteredUserInput(word = "") {
     return [word].map((word) => {
       let i = 0;
       let val = "";
-      while (word[i] === userInput[i]) {
+      while (word[i] !== undefined && word[i] === userInput[i]) {
         val += word[i];
         i++;
       }
