@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import TypeArea from "./TypeArea";
 import UseQuote from "../hooks/UseQuote";
+import useInterval from "../hooks/useInterval";
 
 const Game = () => {
   const [getQuote, quote] = UseQuote();
@@ -9,23 +10,20 @@ const Game = () => {
   const [completedWords, setCompletedWords] = useState([]);
   const [userInput, setUserInput] = useState("");
 
-  const currentQuote = useRef(quote?.quoteText);
+  const [gameStarted, setGameStarted] = useState(false);
 
-  const gameTimeout = useRef();
+  const currentQuote = useRef(quote?.quoteText);
+  const gameScore = useRef(0);
   const gameDuration = useRef(0);
 
-  function gameCountdown() {
-    const now = Date.now();
-    const then = now;
-    gameTimeout.current = setInterval(() => {
-      gameDuration.current = Math.round((Date.now() - then) / 1000);
-      calcCPM(
-        gameDuration.current,
-        currentQuote.current.length,
-        completedWords.join("").length
-      );
-    }, 1000);
-  }
+  const [delay, setDelay] = useState(null);
+  useInterval(() => {
+    gameDuration.current = gameDuration.current + 1;
+    gameScore.current = calcCPM(
+      gameDuration.current,
+      completedWords.join("").concat(filteredUserInput(currentWord)).length
+    );
+  }, delay);
 
   useEffect(() => {
     console.log("new game");
@@ -34,14 +32,15 @@ const Game = () => {
     if (currentWord !== "") {
       //if user plays a game, then plays another this resets the currword to be typed to '' then on next rerender it knows its been reset and next useffect picks up the correct curr word for the game to be played
       console.log("reset curr word & timer");
-      clearInterval(gameTimeout.current);
-      setCurrentWord("");
+      resetGameState();
     }
     if (typeof quote === "object") {
-      console.log("start timer");
-      gameCountdown();
+      //start game, by setting useInterval timeout to 1second, a number
+      const id = setTimeout(() => {
+        setDelay(1000), setGameStarted(true);
+      }, 3000);
+      return () => clearTimeout(id);
     }
-    () => clearInterval(gameTimeout.current);
   }, [quote]);
 
   useEffect(() => {
@@ -50,23 +49,27 @@ const Game = () => {
       completedWords.join("").trim() === currentQuote.current?.trim()
     ) {
       console.log("finished");
-      alert("congrats it just took you " + gameDuration.current + " seconds.");
-      clearInterval(gameTimeout.current);
+      alert(
+        "congrats it just took you " +
+          gameDuration.current +
+          " seconds. Your wpm is: " +
+          gameScore.current
+      );
+      resetGameState();
     }
   }, [currentWord]);
 
-  function calcCPM(seconds, quoteLen, completedLen) {
-    let writtenWordsContainer = document.querySelector(".quoteGoesHere");
-    //the timeout is set on render, therfore the completed words array is forever at [''] I need to make my own setInterval solution.
-    const completedLenTempSolution =
-      writtenWordsContainer.childNodes[0].textContent.concat(
-        writtenWordsContainer.childNodes[1].textContent
-      ).length;
-    const CPMtoWPM = (
-      (completedLenTempSolution / 5) *
-      (60 / seconds)
-    ).toFixed();
-    console.log(CPMtoWPM);
+  function calcCPM(seconds, completedLen) {
+    const CPMtoWPM = ((completedLen / 5) * (60 / seconds)).toFixed();
+    return CPMtoWPM;
+  }
+
+  function resetGameState() {
+    setDelay(null);
+    setCurrentWord("");
+    setGameStarted(false);
+    gameDuration.current = 0;
+    gameScore.current = 0;
   }
 
   function saveUserInput(input) {
@@ -134,6 +137,7 @@ const Game = () => {
             setCompletedWords
           )
         }
+        gameStarted={gameStarted}
         saveUserInput={saveUserInput}
       />
       <button onClick={getQuote}>Get Quote</button>

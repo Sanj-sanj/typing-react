@@ -1,30 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
-const TypeArea = ({ quote, setCurrentWord, append, saveUserInput }) => {
-  const [index, setIndex] = useState(0);
+const TypeArea = ({
+  quote,
+  setCurrentWord,
+  append,
+  gameStarted,
+  saveUserInput,
+}) => {
+  const index = useRef(0);
+  const wordsArray = quote.split(" ");
+  const inputRef = useRef(null);
   useEffect(() => {
-    //if quote changes, that means new game begun, reset index and set currWord to [0] position.
-    if (quote) {
-      setIndex(0);
+    //if gameStarted changes, that means game begun or ended, reset index and set currWord to [0] position of new quote.
+    inputRef.current.value = "";
+    if (gameStarted) {
+      index.current = 0;
       setCurrentWord(quote.split(" ")[0] + " ");
+      inputRef.current.focus();
     }
-  }, [quote]);
+  }, [gameStarted]);
 
   function nextWord(userInput) {
-    const wordsArray = quote.split(" ");
+    const i = index.current;
     const last = wordsArray.length - 1;
-    const currentWord =
-      index === last ? wordsArray[index] : wordsArray[index] + " ";
+    const currentWord = i === last ? wordsArray[i] : wordsArray[i] + " ";
     const nextWord =
-      index + 1 >= last ? wordsArray[index + 1] : wordsArray[index + 1] + " ";
+      i + 1 >= last ? wordsArray[i + 1] : wordsArray[i + 1] + " ";
 
     if (userInput === currentWord) {
       //check to see if the next word is the last word, if it isn't padd the end with whitespace.
-      // if (index === last) {
-      //   alert("you're done bud");
-      // }
       setCurrentWord(nextWord ?? "");
-      setIndex(index + 1);
+      index.current = i + 1;
       return true;
     }
   }
@@ -37,6 +43,8 @@ const TypeArea = ({ quote, setCurrentWord, append, saveUserInput }) => {
           ? (append(e.target.value), (e.target.value = ""), saveUserInput(""))
           : null;
       }}
+      disabled={gameStarted ? false : true}
+      ref={inputRef}
     ></input>
   );
 };
