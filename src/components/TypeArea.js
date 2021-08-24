@@ -9,14 +9,14 @@ const TypeArea = ({
 }) => {
   const index = useRef(0);
   const wordsArray = quote.split(" ");
-  const inputRef = useRef(null);
+  const inputTypeRef = useRef(null);
   useEffect(() => {
     //if gameStarted changes, that means game begun or ended, reset index and set currWord to [0] position of new quote.
-    inputRef.current.value = "";
+    inputTypeRef.current.value = "";
     if (gameStarted) {
       index.current = 0;
       setCurrentWord(quote.split(" ")[0] + " ");
-      inputRef.current.focus();
+      inputTypeRef.current.focus();
     }
   }, [gameStarted]);
 
@@ -37,14 +37,19 @@ const TypeArea = ({
 
   return (
     <input
-      onKeyUp={(e) => {
-        saveUserInput(e.target.value);
-        nextWord(e.target.value) === true
-          ? (append(e.target.value), (e.target.value = ""), saveUserInput(""))
+      onKeyPress={(e) => {
+        saveUserInput(e.target.value + e.key);
+        nextWord(e.target.value + e.key) === true
+          ? (append(e.target.value + e.key),
+            (e.target.value = ""),
+            saveUserInput(""))
           : null;
       }}
+      onKeyUp={(e) => {
+        if (e.target.value === " ") e.target.value = "";
+      }}
       disabled={gameStarted ? false : true}
-      ref={inputRef}
+      ref={inputTypeRef}
     ></input>
   );
 };

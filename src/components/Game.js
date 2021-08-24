@@ -38,7 +38,7 @@ const Game = () => {
       //start game, by setting useInterval timeout to 1second, a number
       const id = setTimeout(() => {
         setDelay(1000), setGameStarted(true);
-      }, 3000);
+      }, 1000);
       return () => clearTimeout(id);
     }
   }, [quote]);
@@ -90,10 +90,12 @@ const Game = () => {
     );
   };
 
-  function filteredUserInput(word = "") {
+  function filteredUserInput(word) {
     return [word].map((word) => {
       let i = 0;
       let val = "";
+      //handle first character, if its not right, return first character, else loop over all characters.
+      if (i === 0 && word[i] !== userInput[i]) return [word[i]];
       while (word[i] !== undefined && word[i] === userInput[i]) {
         val += word[i];
         i++;
