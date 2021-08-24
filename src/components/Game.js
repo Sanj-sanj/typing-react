@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import TypeArea from "./TypeArea";
 import UseQuote from "../hooks/UseQuote";
 import useInterval from "../hooks/useInterval";
+import { userStatsContext } from "../context/userStatsContext";
 
 const Game = () => {
   const [getQuote, quote] = UseQuote();
+  const { state, dispatch } = useContext(userStatsContext);
 
   const [currentWord, setCurrentWord] = useState("");
   const [completedWords, setCompletedWords] = useState([]);
@@ -49,12 +51,18 @@ const Game = () => {
       completedWords.join("").trim() === currentQuote.current?.trim()
     ) {
       console.log("finished");
-      alert(
-        "congrats it just took you " +
-          gameDuration.current +
-          " seconds. Your wpm is: " +
-          gameScore.current
-      );
+      const gameStats = {
+        quote: quote,
+        wpm: gameScore.current,
+        duration: gameDuration.current,
+      };
+      // alert(
+      //   "congrats it just took you " +
+      //     gameDuration.current +
+      //     " seconds. Your wpm is: " +
+      //     gameScore.current
+      // );
+      dispatch({ type: "updateHistory", payload: gameStats });
       resetGameState();
     }
   }, [currentWord]);
