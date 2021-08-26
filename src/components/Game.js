@@ -6,7 +6,7 @@ import { userStatsContext } from "../context/userStatsContext";
 
 const Game = () => {
   const [getQuote, quote] = UseQuote();
-  const { state, dispatch } = useContext(userStatsContext);
+  const { dispatch } = useContext(userStatsContext);
 
   const [currentWord, setCurrentWord] = useState("");
   const [completedWords, setCompletedWords] = useState([]);
@@ -56,12 +56,6 @@ const Game = () => {
         wpm: gameScore.current,
         duration: gameDuration.current,
       };
-      // alert(
-      //   "congrats it just took you " +
-      //     gameDuration.current +
-      //     " seconds. Your wpm is: " +
-      //     gameScore.current
-      // );
       dispatch({ type: "updateHistory", payload: gameStats });
       resetGameState();
     }
@@ -113,8 +107,8 @@ const Game = () => {
   }
 
   return (
-    <div>
-      <div className="quoteGoesHere">
+    <div className="w-3/5 border-2 border-green-500 rounded p-3">
+      <div className="quoteGoesHere pb-2">
         <span style={{ color: "green" }}>{completedWords}</span>
         {currentWord?.startsWith(userInput) ? (
           <>
@@ -137,20 +131,24 @@ const Game = () => {
               ""
             ) ?? "this is where the entire rest of quote is"}
       </div>
-      <TypeArea
-        quote={quote?.quoteText ?? ""}
-        setCurrentWord={setCurrentWord}
-        append={(newWord) =>
-          appendCurrentWordToCompletedWords(
-            newWord,
-            completedWords,
-            setCompletedWords
-          )
-        }
-        gameStarted={gameStarted}
-        saveUserInput={saveUserInput}
-      />
-      <button onClick={getQuote}>Get Quote</button>
+      <div className="flex justify-between">
+        <TypeArea
+          quote={quote?.quoteText ?? ""}
+          setCurrentWord={setCurrentWord}
+          append={(newWord) =>
+            appendCurrentWordToCompletedWords(
+              newWord,
+              completedWords,
+              setCompletedWords
+            )
+          }
+          gameStarted={gameStarted}
+          saveUserInput={saveUserInput}
+        />
+        <button className="border-2 border-gray-800 rounded" onClick={getQuote}>
+          Get Quote
+        </button>
+      </div>
     </div>
   );
 };

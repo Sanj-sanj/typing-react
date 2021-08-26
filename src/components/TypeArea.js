@@ -37,6 +37,7 @@ const TypeArea = ({
 
   return (
     <input
+      className="border-2 rounded border-gray-400"
       onKeyPress={(e) => {
         saveUserInput(e.target.value + e.key);
         nextWord(e.target.value + e.key) === true
@@ -46,7 +47,7 @@ const TypeArea = ({
           : null;
       }}
       onKeyUp={(e) => {
-        if (e.target.value === " ") e.target.value = "";
+        if (e.target.value[0] === " ") e.target.value = e.target.value.trim();
       }}
       disabled={gameStarted ? false : true}
       ref={inputTypeRef}
