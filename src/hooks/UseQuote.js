@@ -23,7 +23,10 @@ const UseQuote = () => {
         setQuote(data.quote);
         loading.current = false;
       })
-      .catch(() => setQuote("An error occured"));
+      .catch(() => {
+        setQuote("An error has occured");
+        loading.current = false;
+      });
   }
 
   return [getQuote, quote];

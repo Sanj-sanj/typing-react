@@ -5,8 +5,8 @@ import useInterval from "../hooks/useInterval";
 import { userStatsContext } from "../context/userStatsContext";
 
 const Game = () => {
-  const [getQuote, quote] = UseQuote();
   const { dispatch } = useContext(userStatsContext);
+  const [getQuote, quote] = UseQuote();
 
   const [currentWord, setCurrentWord] = useState("");
   const [completedWords, setCompletedWords] = useState([]);
@@ -107,7 +107,8 @@ const Game = () => {
   }
 
   return (
-    <div className="w-3/5 border-2 border-green-500 rounded p-3">
+    <div className="w-11/12 sm:w-3/5 border-2 border-green-500 rounded p-3">
+      {/* This Div below line can be broken up into a seperate component for readability */}
       <div className="quoteGoesHere pb-2">
         <span style={{ color: "green" }}>{completedWords}</span>
         {currentWord?.startsWith(userInput) ? (
@@ -131,7 +132,7 @@ const Game = () => {
               ""
             ) ?? "this is where the entire rest of quote is"}
       </div>
-      <div className="flex justify-between">
+      <div className="flex flex-col sm:flex-row justify-between">
         <TypeArea
           quote={quote?.quoteText ?? ""}
           setCurrentWord={setCurrentWord}
@@ -145,7 +146,10 @@ const Game = () => {
           gameStarted={gameStarted}
           saveUserInput={saveUserInput}
         />
-        <button className="border-2 border-gray-800 rounded" onClick={getQuote}>
+        <button
+          className="border-2 border-gray-800 my-2 sm:my-0 px-1 rounded w-24"
+          onClick={getQuote}
+        >
           Get Quote
         </button>
       </div>
